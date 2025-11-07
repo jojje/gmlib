@@ -151,5 +151,38 @@ function GMLib() {
     return cache;
   }
 
-  return {$$, GMXHR, Cache};
+  // Returns a Promise resolving to an element found using a css query expression, when that element becomes available on the page.
+  // Allows for decorating UI elements that are rendered dynamically after a page has loaded (typical for "modern" / over-complicated websites).
+  //
+  // The function polls for an element matching the expression at 100ms intervals by default.
+  // If / once a match is found, stops polling and resolves with the found element.
+  //
+  // Arguments:
+  //   cssExpr:  a CSS query expression.
+  //   interval: (optional) the polling interval (default: 100ms).
+  //   timeout:  (optional) a timeout in milliseconds after which the expression polling will stop, even if the expression never matched on the page.
+  //             If a timeout happen, the promise will be rejected, allowing these cases to be caught and handled (default: infinity).
+  // Returns:
+  //   A promise yielding the resolved element
+  function whenAvailable(cssExpr, interval, timeout) {
+    if (interval === 'undefined') interval = 100;
+    const started = new Date().getTime();
+
+    return new Promise((accept, reject) => {
+      const i = setInterval(() => {
+        if (timeout !== undefined && new Date().getTime() - started >= timeout) {
+          clearInterval(i);
+          reject(`whenAvailable timeout: No match for css expression: "${cssExpr}" on page within ${timeout}ms`)
+          return
+        }
+        const el = document.querySelector(cssExpr);
+        if(!el) return;
+        clearInterval(i);
+        accept(el);
+      }, interval);
+    });
+  };
+
+  return {$$, GMXHR, Cache, whenAvailable};
 }
+
