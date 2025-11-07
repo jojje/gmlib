@@ -13,7 +13,7 @@ It's published to allow me to source it in new user scripts and save a lot of bo
 
 ## Function signatures
 
-* `GMLib() -> {$$, GMXHR, Cache}`, returns an object with all contained functions that can be deconstructed (subset chosen) as needed by the user script: .
+* `GMLib() -> {$$, GMXHR, Cache, whenAvailable}`, returns an object with all contained functions that can be deconstructed (subset chosen) as needed by the user script.
 * `$$(cssExpr: String, [root: HTMLElement]) -> Array`, returns an array of zero or more matched DOM elements.
 * `GMXHR`is a container (object) for a number of request functions. The request functions have the signatures:
   * `get(url: String) -> String`, returns a Promise yielding the HTML string content of the requested URL.
